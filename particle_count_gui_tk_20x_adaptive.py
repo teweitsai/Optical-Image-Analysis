@@ -17,6 +17,7 @@ import tkFileDialog, os
 
 #import matplotlib
 import matplotlib.pyplot as plt
+
 #matplotlib.use('TkAgg')
 
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2TkAgg  
@@ -65,7 +66,7 @@ def analyze_image():
     img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         
     # Adaptive Thresholding
-    block_size = 200
+    block_size = 201
     img_binary = threshold_adaptive(img_gray, block_size, offset=7)    
     img_binary = img_binary.astype(dtype='uint8')*255
     
@@ -85,8 +86,9 @@ def analyze_image():
 #    image, contours, hierarchy = cv2.findContours(filled,
 #                                 cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)         
     # For Anaconda use    
-    contours, hierarchy = cv2.findContours(filled,
+    hierarchy, contours, hierarchy = cv2.findContours(filled,
                                   cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)        
+
     
     # Calculate the area (= len) of each contour
     area = np.zeros(len(contours))
@@ -415,13 +417,9 @@ def analyze_single(single,filled):
             continue
         
         # For anconda use
-        circles = cv2.HoughCircles(temp,cv2.cv.CV_HOUGH_GRADIENT,1,10,
+        circles = cv2.HoughCircles(temp,cv2.HOUGH_GRADIENT,1,10,
                                    param1=100,param2=2,
                                    minRadius=4,maxRadius=10)
-        # For terminal use                            
-#        circles = cv2.HoughCircles(temp,cv2.HOUGH_GRADIENT,1,10,
-#                                   param1=100,param2=1,
-#                                   minRadius=2,maxRadius=5)                           
                                    
         if (circles is None or
             circles[0,0,0]+circles[0,0,2] >= right-left or
